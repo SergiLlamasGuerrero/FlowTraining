@@ -44,5 +44,5 @@ class MainActivity : Activity() {
             i++
             emit(i.toString())
         }
-    }
+    }.shareIn(GlobalScope, SharingStarted.Lazily, replay = 4)
 }
