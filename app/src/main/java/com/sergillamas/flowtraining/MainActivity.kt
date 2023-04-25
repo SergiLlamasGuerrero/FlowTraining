@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
@@ -23,7 +24,6 @@ class MainActivity : Activity() {
         val textView2 = findViewById<TextView>(R.id.textView2)
 
         GlobalScope.launch(Dispatchers.Main) {
-            delay(3_000)
             exampleFlow.collect {
                 textView.text = textView.text.toString() + " " + it
             }
@@ -40,10 +40,12 @@ class MainActivity : Activity() {
 
     private val exampleFlow = flow {
         var i = 0
+        var aux = 0
         while (i < 10) {
             delay(1_000)
-            i++
+            aux++
+            if (aux % 2 == 0) i += 2
             emit(i.toString())
         }
-    }.shareIn(GlobalScope, SharingStarted.Eagerly, replay = 2)
+    }.shareIn(GlobalScope, SharingStarted.Lazily, replay = 2).distinctUntilChanged()
 }
