@@ -4,12 +4,15 @@ import android.app.Activity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
@@ -47,5 +50,11 @@ class MainActivity : Activity() {
             if (aux % 2 == 0) i += 2
             emit(i.toString())
         }
-    }.shareIn(GlobalScope, SharingStarted.Lazily, replay = 2).distinctUntilChanged()
+    }.shareIn(GlobalScope, SharingStarted.Lazily, replay = 2)
+        .onEach {
+            Toast.makeText(applicationContext, "Now we have this value: $it", Toast.LENGTH_SHORT).show()
+        }
+        .onStart {
+            Toast.makeText(applicationContext, "Let's start!!!!", Toast.LENGTH_SHORT).show()
+        }
 }
