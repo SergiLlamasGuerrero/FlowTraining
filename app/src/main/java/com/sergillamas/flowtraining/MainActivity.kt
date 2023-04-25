@@ -23,6 +23,7 @@ class MainActivity : Activity() {
         val textView2 = findViewById<TextView>(R.id.textView2)
 
         GlobalScope.launch(Dispatchers.Main) {
+            delay(3_000)
             exampleFlow.collect {
                 textView.text = textView.text.toString() + " " + it
             }
@@ -44,5 +45,5 @@ class MainActivity : Activity() {
             i++
             emit(i.toString())
         }
-    }.shareIn(GlobalScope, SharingStarted.Lazily, replay = 4)
+    }.shareIn(GlobalScope, SharingStarted.Eagerly, replay = 2)
 }
